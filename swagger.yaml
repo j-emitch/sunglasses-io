@@ -1,11 +1,169 @@
-swagger: '2.0'
+swagger: "2.0"
 info:
-    version: '1.0.0'
-    title: 'E-Commerce API'
-    description: 'API for managing brands, products, and user cart'
-host: 'localhost:3000'
+  version: "1.0.0"
+  title: "E-Commerce API"
+  description: "API for managing brands, products, and user cart"
+host: "localhost:3000"
 schemes:
-    - 'http'
-basePath: '/api'
+  - "http"
+basePath: "/api"
 produces:
-    - 'application/json'
+  - "application/json"
+paths:
+  /brands:
+    get:
+      summary: "Get all brands"
+      description: "Returns a list of all brands"
+      responses:
+        200:
+          description: "A list of brands"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Brand"
+        default:
+          description: "Unexpected error"
+          schema:
+            $ref: "#/definitions/Error"
+  /brands/{id}/products:
+    get:
+      summary: "Get all products for a brand"
+      description: "Returns a list of all products for a specific brand"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          type: "string"
+          description: "ID of the brand to fetch products for"
+      responses:
+        200:
+          description: "A list of products for the specified brand"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Product"
+        404:
+          description: "Brand not found"
+          schema:
+            $ref: "#/definitions/Error"
+  /products:
+    get:
+      summary: "Get all products"
+      description: "Returns a list of all products"
+      responses:
+        200:
+          description: "A list of products"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Product"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/definitions/Error"
+  /login:
+    post:
+      summary: "User login"
+      description: "Logs in a user and returns a token"
+      parameters:
+        - name: "body"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/LoginRequest"
+      responses:
+        200:
+          description: "Login successful"
+          schema:
+            $ref: "#/definitions/LoginResponse"
+        401:
+          description: "Invalid credentials"
+          schema:
+            $ref: "#/definitions/Error"
+  /me/cart:
+    get:
+      summary: "Get user cart"
+      description: "Returns the current user's cart"
+      responses:
+        200:
+          description: "User cart"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Cart"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error"
+    post:
+      summary: "Add product to cart"
+      description: "Adds a product to the current user's cart"
+      parameters:
+        - name: "body"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/AddToCartRequest"
+      responses:
+        200:
+          description: "Product added to cart"
+          schema:
+            $ref: "#/definitions/Cart"
+        400:
+          description: "Invalid request"
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error"
+  /me/cart/{productId}:
+    delete:
+      summary: "Remove product from cart"
+      description: "Removes a product from the current user's cart"
+      parameters:
+        - name: "productId"
+          in: "path"
+          required: true
+          type: "string"
+          description: "ID of the product to remove from cart"
+      responses:
+        200:
+          description: "Product removed from cart"
+          schema:
+            $ref: "#/definitions/Cart"
+        404:
+          description: "Product not found in cart"
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error"
+    post:
+      summary: "Update product quantity in cart"
+      description: "Updates the quantity of a product in the current user's cart"
+      parameters:
+        - name: "productId"
+          in: "path"
+          required: true
+          type: "string"
+          description: "ID of the product to update in cart"
+        - name: "body"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/UpdateCartRequest"
+      responses:
+        200:
+          description: "Product quantity updated in cart"
+          schema:
+            $ref: "#/definitions/Cart"
+        404:
+          description: "Product not found in cart"
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error"
