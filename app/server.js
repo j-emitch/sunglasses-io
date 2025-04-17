@@ -31,9 +31,9 @@ app.listen(PORT, () => {
 	console.log(`Server running on port ${PORT}`);
 });
 
-// Middleware for authentication (example for protected routes)
+// Middleware for authentication 
 const authenticateToken = (req, res, next) => {
-    const token = req.headers['authorization'];
+    const token = req.headers['Authorization'];
     if (!token) return res.status(401).json({ error: 'Unauthorized' });
 
     jwt.verify(token, jwtSecret, (err, user) => {
@@ -50,7 +50,7 @@ app.get('/brands', (req, res) => {
 
 app.get('/brands/:id/products', (req, res) => {
     const brandId = req.params.id;
-    const brandProducts = products.filter(product => product.brandId === brandId);
+    const brandProducts = products.filter(product => product.id === brandId);
     if (brandProducts.length === 0) {
         return res.status(404).json({ error: 'Brand not found' });
     }
