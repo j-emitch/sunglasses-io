@@ -33,7 +33,8 @@ app.listen(PORT, () => {
 
 // Middleware for authentication 
 const authenticateToken = (req, res, next) => {
-    const token = req.headers['Authorization'];
+    const token = req.headers['authorization'];
+		//console.log("token", req.headers);
     if (!token) return res.status(401).json({ error: 'Unauthorized' });
 
     jwt.verify(token, jwtSecret, (err, user) => {
@@ -66,10 +67,12 @@ app.post('/login', (req, res) => {
   const user = users.find(
     (u) => u.login.username === username && u.login.password === password
   );
+	//console.log("user", user);
+
   if (!user) {
     return res.status(401).json({ error: "Invalid credentials" });
   }
-  const token = jwt.sign({ id: user.id, username: user.username }, jwtSecret, {
+  const token = jwt.sign({ username: user.login.username }, jwtSecret, {
     expiresIn: "1h",
   });
   res.json({ token });
@@ -77,13 +80,16 @@ app.post('/login', (req, res) => {
 });
 
 app.get('/me/cart', authenticateToken, (req, res) => {
-    const userCart = users.find(u => u.id === req.user.id)?.cart || [];
+	const userCart = users.find(u => u.login.username === req.user.username).cart;
+		if (!userCart) {
+			return res.status(401).json({ error: "Unauthorized" });
+		}		
     res.json(userCart);
 });
 
 app.post('/me/cart', authenticateToken, (req, res) => {
     const { productId, quantity } = req.body;
-    const user = users.find(u => u.id === req.user.id);
+    const user = users.find(u => u.login.username === req.user.username);
     if (!user) {
         return res.status(401).json({ error: 'Unauthorized' });
     }

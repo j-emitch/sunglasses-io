@@ -110,7 +110,7 @@ describe("Cart", () => {
         "https://image.shutterstock.com/z/stock-photo-yellow-sunglasses-white-backgound-600820286.jpg",
         "https://image.shutterstock.com/z/stock-photo-yellow-sunglasses-white-backgound-600820286.jpg",
         "https://image.shutterstock.com/z/stock-photo-yellow-sunglasses-white-backgound-600820286.jpg",
-      ],
+      ]
     };
     chai
       .request(server)
@@ -121,6 +121,43 @@ describe("Cart", () => {
         res.should.have.status(200);
         res.body.should.be.a("array");
         done();
+      });
+  });
+
+  it("should update quantity if the product already exists in the cart on /me/cart", (done) => {
+    const product = {
+      id: "2",
+      categoryId: "1",
+      name: "Black Sunglasses",
+      description: "The best glasses in the world",
+      price: 100,
+      imageUrls: [
+        "https://image.shutterstock.com/z/stock-photo-yellow-sunglasses-white-backgound-600820286.jpg",
+        "https://image.shutterstock.com/z/stock-photo-yellow-sunglasses-white-backgound-600820286.jpg",
+        "https://image.shutterstock.com/z/stock-photo-yellow-sunglasses-white-backgound-600820286.jpg",
+      ]
+    };
+    chai
+      .request(server)
+      .post("/me/cart")
+      .set("Authorization", token)
+      .send(product)
+      .end((err, res) => {
+        res.should.have.status(200);
+        chai
+          .request(server)
+          .post("/me/cart")
+          .set("Authorization", token)
+          .send(product)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a("array");
+            const cart = res.body;
+            const productInCart = cart.find((item) => item.id === product.id);
+            productInCart.should.exist;
+            productInCart.should.have.property("quantity").eql(2);
+            done();
+          });
       });
   });
 
