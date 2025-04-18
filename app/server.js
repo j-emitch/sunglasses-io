@@ -62,13 +62,18 @@ app.get('/products', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-    const { username, password } = req.body;
-    const user = users.find(u => u.username === username && u.password === password);
-    if (!user) {
-        return res.status(401).json({ error: 'Invalid credentials' });
-    }
-    const token = jwt.sign({ id: user.id, username: user.username }, jwtSecret, { expiresIn: '1h' });
-    res.json({ token });
+  const { username, password } = req.body;
+  const user = users.find(
+    (u) => u.login.username === username && u.login.password === password
+  );
+  if (!user) {
+    return res.status(401).json({ error: "Invalid credentials" });
+  }
+  const token = jwt.sign({ id: user.id, username: user.username }, jwtSecret, {
+    expiresIn: "1h",
+  });
+  res.json({ token });
+  //res.json({token: { token }});
 });
 
 app.get('/me/cart', authenticateToken, (req, res) => {
