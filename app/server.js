@@ -62,7 +62,10 @@ app.get('/products', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-  const { username, password } = req.body;
+  if (req.body.username === undefined || req.body.password === undefined) {	
+		return res.status(400).json({ error: "Username and password are required" });
+	}
+	const { username, password } = req.body;
   const user = users.find(
     (u) => u.login.username === username && u.login.password === password
   );
@@ -102,11 +105,12 @@ app.post('/me/cart', authenticateToken, (req, res) => {
 
 app.delete('/me/cart/:productId', authenticateToken, (req, res) => {
     const productId = req.params.productId;
+		console.log(productId);	
     const user = users.find(u => u.id === req.user.id);
     if (!user) {
         return res.status(401).json({ error: 'Unauthorized' });
     }
-    const productIndex = user.cart.findIndex(item => item.productId === productId);
+    const productIndex = user.cart.findIndex(item => item.id === productId);
     if (productIndex === -1) {
         return res.status(404).json({ error: 'Product not found in cart' });
     }
@@ -115,7 +119,7 @@ app.delete('/me/cart/:productId', authenticateToken, (req, res) => {
 });
 
 app.post('/me/cart/:productId', authenticateToken, (req, res) => {
-    const productId = req.params.productId;
+    const productId = req.params.id;
     const { quantity } = req.body;
     const user = users.find(u => u.id === req.user.id);
     if (!user) {
