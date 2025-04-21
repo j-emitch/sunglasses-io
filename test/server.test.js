@@ -58,6 +58,19 @@ describe("Login", () => {
       });
   });
 
+  it("should return 400 for missing username or password on /login", (done) => {
+    const invalidCredentials = { username: "yellowleopard753" }; 
+    chai
+      .request(server)
+      .post("/login")
+      .send(invalidCredentials)
+      .end((err, res) => {
+        res.should.have.status(400);
+        res.body.should.have.property("error").eql("Username and password are required");
+        done();
+      });
+  });
+
   it("should return 401 for invalid credentials on /login", (done) => {
     const invalidCredentials = { username: "invalid", password: "invalid" };
     chai
