@@ -5,6 +5,7 @@ const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const swaggerDocument = YAML.load('./swagger.yaml'); // Replace './swagger.yaml' with the path to your Swagger file
 const app = express();
+require("dotenv").config();
 
 app.use(bodyParser.json());
 
@@ -13,8 +14,7 @@ const users = require('../initial-data/users.json');
 const brands = require('../initial-data/brands.json');
 const products = require('../initial-data/products.json');
 
-//replace by .env file
-const jwtSecret = "88312679-04c9-4351-85ce-3ed75293b449"; 
+const jwtSecret = process.env.jwtSecret; 
 
 // Error handling
 app.use((err, req, res, next) => {
@@ -45,7 +45,8 @@ const authenticateToken = (req, res, next) => {
 
 // Routes
 app.get('/brands', (req, res) => {
-    res.json(brands);
+  //add error handling?  
+	res.json(brands);
 });
 
 app.get('/brands/:id/products', (req, res) => {
