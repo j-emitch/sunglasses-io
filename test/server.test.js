@@ -187,6 +187,8 @@ describe("Cart", () => {
       .end((err, res) => {
         res.should.have.status(200);
         res.body.should.be.a("array");
+        const productInCart = res.body.find((item) => item.id === productId);
+        should.not.exist(productInCart);
         done();
       });
   });
