@@ -34,6 +34,7 @@ app.listen(PORT, () => {
 // Middleware for authentication 
 const authenticateToken = (req, res, next) => {
     const token = req.headers['authorization'];
+		//console.log(token);
     if (!token) return res.status(401).json({ error: 'Unauthorized' });
 
     jwt.verify(token, jwtSecret, (err, user) => {
@@ -45,7 +46,6 @@ const authenticateToken = (req, res, next) => {
 
 // Routes
 app.get('/brands', (req, res) => {
-  //add error handling?  
 	res.json(brands);
 });
 
@@ -77,7 +77,6 @@ app.post('/login', (req, res) => {
     expiresIn: "1h",
   });
   res.json({ token });
-  //res.json({token: { token }});
 });
 
 app.get('/me/cart', authenticateToken, (req, res) => {
@@ -94,19 +93,18 @@ app.post('/me/cart', authenticateToken, (req, res) => {
   if (!userCart) {
     return res.status(401).json({ error: "Unauthorized" });
   }
+	const product = products.find((item) => item.id === id);
   const existingProduct = userCart.find((item) => item.id === id);
   if (existingProduct) {
     existingProduct.quantity += 1;
   } else {
-    userCart.push({ id, quantity: 1 });
+    userCart.push({ ...product, quantity: 1 });
   }
-	//console.log(user.cart);
   res.json(userCart);
 });
 
 app.delete('/me/cart/:productId', authenticateToken, (req, res) => {
     const productId = req.params.productId;
-		console.log(productId);	
     const user = users.find(u => u.id === req.user.id);
     if (!user) {
         return res.status(401).json({ error: 'Unauthorized' });

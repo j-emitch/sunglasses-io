@@ -108,6 +108,7 @@ describe("Cart", () => {
       .end((err, res) => {
         res.should.have.status(200);
         res.body.should.be.a("array");
+        res.body.should.be.eql([]);
         done();
       });
   });
@@ -129,10 +130,13 @@ describe("Cart", () => {
       .request(server)
       .post("/me/cart")
       .set("Authorization", token)
-      .send(product)
+      .send({id: product.id})
       .end((err, res) => {
         res.should.have.status(200);
         res.body.should.be.a("array");
+        productInCart = res.body.find((item) => item.id === product.id);
+        productInCart.should.exist;
+        productInCart.should.have.property("quantity").eql(1);
         done();
       });
   });
@@ -154,14 +158,14 @@ describe("Cart", () => {
       .request(server)
       .post("/me/cart")
       .set("Authorization", token)
-      .send(product)
+      .send({ id: product.id })
       .end((err, res) => {
         res.should.have.status(200);
         chai
           .request(server)
           .post("/me/cart")
           .set("Authorization", token)
-          .send(product)
+          .send({ id: product.id })
           .end((err, res) => {
             res.should.have.status(200);
             res.body.should.be.a("array");
