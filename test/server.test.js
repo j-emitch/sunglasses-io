@@ -207,7 +207,7 @@ describe("Cart", () => {
   });
 
   it("should POST to update product quantity in cart on /me/cart/:productId", (done) => {
-    const productId = "1"; 
+    const productId = "2"; 
     const updatedQuantity = { quantity: 5 };
     chai
       .request(server)
@@ -217,6 +217,12 @@ describe("Cart", () => {
       .end((err, res) => {
         res.should.have.status(200);
         res.body.should.be.a("array");
+        const cart = res.body;
+        const productInCart = cart.find(
+          (item) => item.id === productId
+        );
+        productInCart.should.exist;
+        productInCart.should.have.property("quantity").eql(5);
         done();
       });
   });
