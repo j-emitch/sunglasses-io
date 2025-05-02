@@ -9,6 +9,29 @@ chai.use(chaiHttp);
 
 describe("Brands", () => {
   it("should GET all brands on /brands", (done) => {
+    const returnedBrands = 
+    [
+      {
+        id: "1",
+        name: "Oakley",
+      },
+      {
+        id: "2",
+        name: "Ray Ban",
+      },
+      {
+        id: "3",
+        name: "Levi's",
+      },
+      {
+        id: "4",
+        name: "DKNY",
+      },
+      {
+        id: "5",
+        name: "Burberry",
+      },
+    ];
     chai
       .request(server)
       .get("/brands")
@@ -22,32 +45,32 @@ describe("Brands", () => {
   it("should GET all products for a specific brand on /brands/:id/products", (done) => {
     const brandId = "2"; 
     const returnedProducts = 
-      [
-        {
-          id: "4",
-          categoryId: "2",
-          name: "Better glasses",
-          description: "The best glasses in the world",
-          price: 1500,
-          imageUrls: [
-            "https://image.shutterstock.com/z/stock-photo-yellow-sunglasses-white-backgound-600820286.jpg",
-            "https://image.shutterstock.com/z/stock-photo-yellow-sunglasses-white-backgound-600820286.jpg",
-            "https://image.shutterstock.com/z/stock-photo-yellow-sunglasses-white-backgound-600820286.jpg",
-          ],
-        },
-        {
-          id: "5",
-          categoryId: "2",
-          name: "Glasses",
-          description: "The most normal glasses in the world",
-          price: 150,
-          imageUrls: [
-            "https://image.shutterstock.com/z/stock-photo-yellow-sunglasses-white-backgound-600820286.jpg",
-            "https://image.shutterstock.com/z/stock-photo-yellow-sunglasses-white-backgound-600820286.jpg",
-            "https://image.shutterstock.com/z/stock-photo-yellow-sunglasses-white-backgound-600820286.jpg",
-          ],
-        },
-      ];
+    [
+      {
+        id: "4",
+        categoryId: "2",
+        name: "Better glasses",
+        description: "The best glasses in the world",
+        price: 1500,
+        imageUrls: [
+          "https://image.shutterstock.com/z/stock-photo-yellow-sunglasses-white-backgound-600820286.jpg",
+          "https://image.shutterstock.com/z/stock-photo-yellow-sunglasses-white-backgound-600820286.jpg",
+          "https://image.shutterstock.com/z/stock-photo-yellow-sunglasses-white-backgound-600820286.jpg",
+        ],
+      },
+      {
+        id: "5",
+        categoryId: "2",
+        name: "Glasses",
+        description: "The most normal glasses in the world",
+        price: 150,
+        imageUrls: [
+          "https://image.shutterstock.com/z/stock-photo-yellow-sunglasses-white-backgound-600820286.jpg",
+          "https://image.shutterstock.com/z/stock-photo-yellow-sunglasses-white-backgound-600820286.jpg",
+          "https://image.shutterstock.com/z/stock-photo-yellow-sunglasses-white-backgound-600820286.jpg",
+        ],
+      },
+    ];
     chai
       .request(server)
       .get(`/brands/${brandId}/products`)
