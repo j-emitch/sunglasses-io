@@ -20,13 +20,41 @@ describe("Brands", () => {
   });
 
   it("should GET all products for a specific brand on /brands/:id/products", (done) => {
-    const brandId = "1"; 
+    const brandId = "2"; 
+    const returnedProducts = 
+      [
+        {
+          id: "4",
+          categoryId: "2",
+          name: "Better glasses",
+          description: "The best glasses in the world",
+          price: 1500,
+          imageUrls: [
+            "https://image.shutterstock.com/z/stock-photo-yellow-sunglasses-white-backgound-600820286.jpg",
+            "https://image.shutterstock.com/z/stock-photo-yellow-sunglasses-white-backgound-600820286.jpg",
+            "https://image.shutterstock.com/z/stock-photo-yellow-sunglasses-white-backgound-600820286.jpg",
+          ],
+        },
+        {
+          id: "5",
+          categoryId: "2",
+          name: "Glasses",
+          description: "The most normal glasses in the world",
+          price: 150,
+          imageUrls: [
+            "https://image.shutterstock.com/z/stock-photo-yellow-sunglasses-white-backgound-600820286.jpg",
+            "https://image.shutterstock.com/z/stock-photo-yellow-sunglasses-white-backgound-600820286.jpg",
+            "https://image.shutterstock.com/z/stock-photo-yellow-sunglasses-white-backgound-600820286.jpg",
+          ],
+        },
+      ];
     chai
       .request(server)
       .get(`/brands/${brandId}/products`)
       .end((err, res) => {
         res.should.have.status(200);
         res.body.should.be.a("array");
+        res.body.should.deep.equal(returnedProducts);
         done();
       });
   });
