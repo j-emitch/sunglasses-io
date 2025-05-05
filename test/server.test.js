@@ -1,44 +1,22 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const server = require('../app/server');
+const products = require("../initial-data/products.json");
+const brands = require("../initial-data/brands.json");
 
 const should = chai.should();
 chai.use(chaiHttp);
 
-// TODO: Write tests for the server
 
 describe("Brands", () => {
   it("should GET all brands on /brands", (done) => {
-    const returnedBrands = 
-    [
-      {
-        id: "1",
-        name: "Oakley",
-      },
-      {
-        id: "2",
-        name: "Ray Ban",
-      },
-      {
-        id: "3",
-        name: "Levi's",
-      },
-      {
-        id: "4",
-        name: "DKNY",
-      },
-      {
-        id: "5",
-        name: "Burberry",
-      },
-    ];
     chai
       .request(server)
       .get("/brands")
       .end((err, res) => {
         res.should.have.status(200);
         res.body.should.be.a("array");
-        res.body.should.deep.equal(returnedBrands);
+        res.body.should.deep.equal(brands);
         done();
       });
   });
@@ -91,6 +69,20 @@ describe("Brands", () => {
       .end((err, res) => {
         res.should.have.status(404);
         res.body.should.have.property("error").eql("Brand not found");
+        done();
+      });
+  });
+});
+
+describe("Products", () => {
+  it("should GET all products on /products", (done) => {
+    chai
+      .request(server)
+      .get("/products")
+      .end((err, res) => {
+        res.should.have.status(200); 
+        res.body.should.be.a("array"); 
+        res.body.should.deep.equal(products);
         done();
       });
   });
