@@ -92,8 +92,7 @@ paths:
         200:
           description: "User cart"
           schema:
-            items:
-              $ref: "#/definitions/Cart"
+            $ref: "#/definitions/Cart"
         401:
           description: "Unauthorized"
           schema:
@@ -112,6 +111,8 @@ paths:
           required: true
           type: "object"
           description: "ID of the product to add to cart"
+          example:
+            id: "2"
       responses:
         200:
           description: "Product added to cart"
@@ -165,13 +166,15 @@ paths:
         - name: "productId"
           in: "path"
           required: true
-          type: "object"
+          type: "string"
           description: "ID of the product to update in cart"
         - name: "quantity"
           in: "body"
           required: true
           type: "string"
           description: "New quantity of the product in the cart"
+          example:
+            quantity: 3
       responses:
         200:
           description: "Product quantity updated in cart"
@@ -196,6 +199,8 @@ definitions:
         type: "string"
         description: "The name of the brand"
   Cart:
+    type: "array"
+    description: "A list of products in the cart"
     items:
       type: "object"
       properties:
@@ -203,7 +208,7 @@ definitions:
           type: "string"
           description: "The ID of the product"
         quantity:
-          type: "integer"
+          type: "string"
           description: "The quantity of the product in the cart"
   Product:
     type: "object"
@@ -235,15 +240,6 @@ definitions:
       message:
         type: "string"
         description: "Error message"
-  AddToCartRequest:
-    type: "object"
-    properties:
-      id:
-        type: "string"
-        description: "The ID of the product to add to the cart"
-      quantity:
-        type: "integer"
-        description: "The quantity of the product to add"
   LoginRequest:
     type: "object"
     properties:
