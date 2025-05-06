@@ -76,6 +76,10 @@ paths:
           description: "Login successful"
           schema:
             $ref: "#/definitions/LoginResponse"
+        400:
+          description: "Invalid request"
+          schema:
+            $ref: "#/definitions/Error"
         401:
           description: "Invalid credentials"
           schema:
@@ -88,7 +92,6 @@ paths:
         200:
           description: "User cart"
           schema:
-            type: "array"
             items:
               $ref: "#/definitions/Cart"
         401:
@@ -99,11 +102,16 @@ paths:
       summary: "Add product to cart"
       description: "Adds a product to the current user's cart"
       parameters:
-        - name: "body"
+        - name: "Authorization"
+          in: "header"
+          required: true
+          type: "string"
+          description: "Token for authentication"
+        - name: "id"
           in: "body"
           required: true
-          schema:
-            $ref: "#/definitions/AddToCartRequest"
+          type: "object"
+          description: "ID of the product to add to cart"
       responses:
         200:
           description: "Product added to cart"
@@ -122,6 +130,11 @@ paths:
       summary: "Remove product from cart"
       description: "Removes a product from the current user's cart"
       parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          type: "string"
+          description: "Token for authentication"
         - name: "productId"
           in: "path"
           required: true
@@ -144,16 +157,21 @@ paths:
       summary: "Update product quantity in cart"
       description: "Updates the quantity of a product in the current user's cart"
       parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          type: "string"
+          description: "Token for authentication"
         - name: "productId"
           in: "path"
           required: true
-          type: "string"
+          type: "object"
           description: "ID of the product to update in cart"
-        - name: "body"
+        - name: "quantity"
           in: "body"
           required: true
-          schema:
-            $ref: "#/definitions/UpdateCartRequest"
+          type: "string"
+          description: "New quantity of the product in the cart"
       responses:
         200:
           description: "Product quantity updated in cart"
@@ -167,3 +185,77 @@ paths:
           description: "Unauthorized"
           schema:
             $ref: "#/definitions/Error"
+definitions:
+  Brand:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "The ID of the brand"
+      name:
+        type: "string"
+        description: "The name of the brand"
+  Cart:
+    items:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          description: "The ID of the product"
+        quantity:
+          type: "integer"
+          description: "The quantity of the product in the cart"
+  Product:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "The ID of the product"
+      categoryId:
+        type: "string"
+        description: "The ID of the category the product belongs to"
+      name:
+        type: "string"
+        description: "The name of the product"
+      price:
+        type: "number"
+        format: "float"
+        description: "The price of the product"
+      description:
+        type: "string"
+        description: "The description of the product"
+      imageUrls:
+        type: "array"
+        items:
+          type: "string"
+          description: "URL of the product image"
+  Error:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        description: "Error message"
+  AddToCartRequest:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "The ID of the product to add to the cart"
+      quantity:
+        type: "integer"
+        description: "The quantity of the product to add"
+  LoginRequest:
+    type: "object"
+    properties:
+      username:
+        type: "string"
+        description: "The username of the user"
+      password:
+        type: "string"
+        description: "The password of the user"
+  LoginResponse:
+    type: "object"
+    properties:
+      token:
+        type: "string"
+        description: "The JWT token for authentication"
