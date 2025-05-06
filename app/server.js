@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
-const swaggerDocument = YAML.load('./swagger.yaml'); // Replace './swagger.yaml' with the path to your Swagger file
+const swaggerDocument = YAML.load('./swagger.yaml');
 const app = express();
 require("dotenv").config();
 
@@ -34,13 +34,12 @@ app.listen(PORT, () => {
 // Middleware for authentication 
 const authenticateToken = (req, res, next) => {
     const token = req.headers['authorization'];
-		//console.log(token);
     if (!token) return res.status(401).json({ error: 'Unauthorized' });
 
     jwt.verify(token, jwtSecret, (err, user) => {
-        if (err) return res.status(401).json({ error: 'Unauthorized' });
-        req.user = user;
-        next();
+			if (err) return res.status(401).json({ error: 'Unauthorized' });
+			req.user = user;
+			next();
     });
 };
 
@@ -51,7 +50,7 @@ app.get('/brands', (req, res) => {
 
 app.get('/brands/:id/products', (req, res) => {
     const brandId = req.params.id;
-    const brandProducts = products.filter(product => product.id === brandId);
+    const brandProducts = products.filter(product => product.categoryId === brandId);
     if (brandProducts.length === 0) {
         return res.status(404).json({ error: 'Brand not found' });
     }
@@ -133,5 +132,3 @@ app.post('/me/cart/:productId', authenticateToken, (req, res) => {
 });
 
 module.exports = app;
-
-//token in header not body 
